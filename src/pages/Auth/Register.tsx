@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Role } from "../../models/users/role.enum";
-import { useNavigate } from "react-router-dom";
 import AuthService from "../../services/auth.service";
 import { showToast } from "../../utils/Toast";
 import Button from "../../components/Button";
@@ -15,7 +14,6 @@ const Register = () => {
   });
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const navigate = useNavigate();
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -31,7 +29,9 @@ const Register = () => {
 
     if (res) {
       showToast("success", res.message);
-      navigate("/");
+      setTimeout(() => {
+    window.location.reload();
+  }, 300);
     }
   };
 

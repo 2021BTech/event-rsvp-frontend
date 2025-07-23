@@ -4,12 +4,14 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { showToast } from "../../utils/Toast";
 import AuthService from "../../services/auth.service";
+import { useAuth } from "../../context/auth-context";
 
 const Login = () => {
   const [form, setForm] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -25,6 +27,7 @@ const Login = () => {
       sessionStorage.setItem("token", res.token);
       sessionStorage.setItem("user", JSON.stringify(res.user));
       showToast("success", `${res.user.name} logged in successfully`);
+      login();
       navigate("/dashboard");
     }
   };
@@ -33,7 +36,10 @@ const Login = () => {
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Email */}
       <div>
-        <label htmlFor="email" className="block mb-2 text-sm text-gray-600 dark:text-gray-200">
+        <label
+          htmlFor="email"
+          className="block mb-2 text-sm text-gray-600 dark:text-gray-200"
+        >
           Email Address
         </label>
         <input
@@ -50,7 +56,10 @@ const Login = () => {
       {/* Password with toggle icon */}
       <div className="mt-6">
         <div className="flex justify-between mb-2">
-          <label htmlFor="password" className="text-sm text-gray-600 dark:text-gray-200">
+          <label
+            htmlFor="password"
+            className="text-sm text-gray-600 dark:text-gray-200"
+          >
             Password
           </label>
           <a href="#" className="text-sm text-gray-400 hover:underline">

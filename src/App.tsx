@@ -1,14 +1,20 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
 import AuthPage from "./pages/Auth/AuthPage";
 import DashboardLayout from "./components/layout/DashboardLayout";
 import DashboardHome from "./pages/Dashboard/DashboardHome";
-
+import { useAuth } from "./context/auth-context";
+import UserPage from "./pages/Users/User";
 
 function App() {
-  const isAuthenticated = !!sessionStorage.getItem("token");
+  const { isAuthenticated } = useAuth();
 
   return (
     <>
@@ -24,13 +30,25 @@ function App() {
               )
             }
           />
-
           <Route
             path="/dashboard"
             element={
               isAuthenticated ? (
                 <DashboardLayout>
                   <DashboardHome />
+                </DashboardLayout>
+              ) : (
+                <Navigate to="/" replace />
+              )
+            }
+          />
+
+          <Route
+            path="/users"
+            element={
+              isAuthenticated ? (
+                <DashboardLayout>
+                  <UserPage />
                 </DashboardLayout>
               ) : (
                 <Navigate to="/" replace />

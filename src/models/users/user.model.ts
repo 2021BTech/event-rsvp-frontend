@@ -4,7 +4,9 @@ interface BaseModel {
 }
 
 export interface User extends BaseModel {
+    _id: string;
   name: string;
   email: string;
   role: "admin" | "user";
+  [key: string]: string | number | undefined;
 }
