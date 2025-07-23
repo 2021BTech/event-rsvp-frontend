@@ -7,12 +7,23 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
-    <div className="flex min-h-screen">
-      <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
+    <div className="flex h-screen overflow-hidden">
+      {/* Sidebar - Hidden on mobile, visible on md+ */}
+      <div className="md:fixed md:inset-y-0 md:left-0 md:z-30 md:w-64">
+        <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
+      </div>
 
-      <div className="flex-1 flex flex-col">
-        <Navbar onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
-        <main className="mt-16 p-4 bg-gray-50 min-h-screen">{children}</main>
+      {/* Main content wrapper */}
+      <div className="flex flex-col flex-1 w-full md:pl-64">
+        {/* Navbar */}
+        <div className="fixed top-0 left-0 right-0 z-20 md:left-64">
+          <Navbar onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
+        </div>
+
+        {/* Page content */}
+        <main className="flex-1 overflow-y-auto mt-16 p-4 bg-gray-50">
+          {children}
+        </main>
       </div>
     </div>
   );
