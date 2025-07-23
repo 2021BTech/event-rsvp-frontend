@@ -1,3 +1,4 @@
+import type { EventProps } from "../models/events/event.model";
 import type { User } from "../models/users/user.model";
 import ApiCall from "../utils/ApiCall";
 
@@ -21,7 +22,7 @@ export default class EventService {
     total: number;
     page: number;
     totalPages: number;
-    data: User[];
+    data: EventProps[];
   }>({
     Url: `/admin/events?page=${page}&limit=${limit}`,
     Method: "GET",

@@ -16,6 +16,7 @@ const UserPage = () => {
   const pageSize = 10;
   const [showConfirm, setShowConfirm] = useState(false);
   const [userToDelete, setUserToDelete] = useState<User | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   const fetchUsers = async (currentPage: number) => {
     setLoading(true);
@@ -37,6 +38,8 @@ const UserPage = () => {
 
   const handleDeleteUser = async () => {
     if (!userToDelete) return;
+
+    setDeleting(true);
 
     try {
       const res = await EventService.deleteAdminUser(userToDelete._id);
@@ -142,7 +145,7 @@ const UserPage = () => {
         }}
         onConfirm={handleDeleteUser}
         confirmText="Delete User"
-        loading={loading}
+        loading={deleting}
       />
     </div>
   );

@@ -17,3 +17,5 @@ export interface EventProps extends BaseModel {
   maxAttendees: number;
   attendees: Attendee[];
 }
+
+

@@ -32,8 +32,11 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
             onClick={onConfirm}
             className="px-4 py-2 text-sm text-white bg-red-600 rounded hover:bg-red-700"
           >
-           {loading && <Spinner />}
-            {loading ? "Deleting..." : confirmText}
+            {loading ? (
+              <Spinner size={16} color="white" />
+            ) : (
+              confirmText
+            )}
           </button>
         </div>
       </div>
