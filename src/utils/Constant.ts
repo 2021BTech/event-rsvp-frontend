@@ -1,6 +1,6 @@
 export default class Constants {
 
-  static apiBaseUrl = process.env.REACT_APP_BASEURL;
+  static apiBaseUrl = import.meta.env.VITE_BASE_URL;
 
   static defaultModalStyle = {
     content: {

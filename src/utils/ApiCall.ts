@@ -29,7 +29,7 @@ export default async function ApiCall<R = unknown, D = unknown>({
       method: Method,
       url: baseUrl + Url.trim(),
       data: Data,
-      timeout: timeoutOverride || Number(process.env.REACT_APP_REQUEST_TIMEOUT),
+      timeout: timeoutOverride || Number(import.meta.env.VITE_APP_REQUEST_TIMEOUT),
       headers,
       withCredentials: true,
     });
