@@ -4,11 +4,15 @@ import type { EventProps } from "../../models/events/event.model";
 import type { User } from "../../models/users/user.model";
 import EventCard from "../../components/EventCard";
 import { FiUsers, FiCalendar } from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
 
 const DashboardHome = () => {
   const [events, setEvents] = useState<EventProps[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+  const [totalEventCount, setTotalEventCount] = useState(0);
+  const [totalUserCount, setTotalUserCount] = useState(0);
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -18,7 +22,9 @@ const DashboardHome = () => {
         const userRes = await EventService.getAdminUsers(1, 5); // top 5 users
         if (eventRes && userRes) {
           setEvents(eventRes.data);
+          setTotalEventCount(eventRes.total);
           setUsers(userRes.data);
+          setTotalUserCount(userRes.total);
         }
       } catch (err) {
         console.error("Failed to fetch dashboard data", err);
@@ -48,7 +54,7 @@ const DashboardHome = () => {
               <div>
                 <p className="text-gray-500">Total Users</p>
                 <h2 className="text-3xl font-bold text-indigo-600">
-                  {users.length}
+                  {totalUserCount}
                 </h2>
               </div>
               <FiUsers className="text-indigo-500 text-4xl" />
@@ -57,7 +63,7 @@ const DashboardHome = () => {
               <div>
                 <p className="text-gray-500">Total Events</p>
                 <h2 className="text-3xl font-bold text-green-600">
-                  {events.length}
+                  {totalEventCount}
                 </h2>
               </div>
               <FiCalendar className="text-green-500 text-4xl" />
@@ -81,6 +87,9 @@ const DashboardHome = () => {
                     date={event.date}
                     maxAttendees={event.maxAttendees}
                     attendeeCount={event.attendees?.length || 0}
+                    image={event.image}
+                    onEdit={() => navigate(`/create/${event._id}`)}
+                    onDelete={() => EventService.deleteAdminEvent(event._id)}
                   />
                 ))}
               </div>

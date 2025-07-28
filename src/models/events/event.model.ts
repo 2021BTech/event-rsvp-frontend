@@ -16,6 +16,14 @@ export interface EventProps extends BaseModel {
   date: string; 
   maxAttendees: number;
   attendees: Attendee[];
+  image: string;
 }
 
 
+export interface CreateEventDTO {
+  title: string;
+  description: string;
+  date: string;
+  maxAttendees: number;
+  image: File | string;
+}

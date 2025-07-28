@@ -15,9 +15,13 @@ export default async function ApiCall<R = unknown, D = unknown>({
   const token = sessionStorage.getItem("token");
   const tenantId = sessionStorage.getItem("tenantId");
 
-  const headers: Record<string, string> = {
-    "Content-Type": "application/json",
-  };
+  const isFormData =
+    typeof FormData !== "undefined" && Data instanceof FormData;
+  const headers: Record<string, string> = {};
+
+  if (!isFormData) {
+    headers["Content-Type"] = "application/json";
+  }
 
   if (token) headers["Authorization"] = `Bearer ${token}`;
   if (tenantId) headers["tenant"] = tenantId;
@@ -29,8 +33,9 @@ export default async function ApiCall<R = unknown, D = unknown>({
       method: Method,
       url: baseUrl + Url.trim(),
       data: Data,
-      timeout: timeoutOverride || Number(import.meta.env.VITE_APP_REQUEST_TIMEOUT),
-      headers,
+      timeout:
+        timeoutOverride || Number(import.meta.env.VITE_APP_REQUEST_TIMEOUT),
+      headers: headers,
       withCredentials: true,
     });
 
@@ -40,37 +45,37 @@ export default async function ApiCall<R = unknown, D = unknown>({
 
     return response.data;
   } catch (error: unknown) {
-    if (
-      typeof error === "object" &&
-      error !== null &&
-      "response" in error &&
-      typeof (error as Record<string, unknown>).response === "object"
-    ) {
-      const errRes = (error as {
-        response: {
-          status: number;
-          statusText?: string;
-          data?: { message?: string } | string;
-        };
-      }).response;
+    console.error("API Error:", error);
 
-      if (errRes.status === 401 || errRes.statusText === "Unauthorized") {
-        sessionStorage.clear();
-        window.location.href = "/";
+    if (axios.isAxiosError(error)) {
+      const errRes = error.response;
+
+      if (errRes) {
+        const message =
+          typeof errRes.data === "string"
+            ? errRes.data
+            : errRes.data?.message || "Something went wrong.";
+
+        if (errRes.status === 401 || errRes.statusText === "Unauthorized") {
+          sessionStorage.clear();
+          window.location.href = "/";
+          return null;
+        }
+
+        if (!silent) {
+          if (errRes.status >= 400 && errRes.status < 500) {
+            showToast("warning", message);
+          } else if (errRes.status >= 500) {
+            showToast("error", message);
+          }
+        }
+
         return null;
       }
 
-      const message =
-        typeof errRes.data === "string"
-          ? errRes.data
-          : errRes.data?.message || "Something went wrong.";
-
-      if (errRes.status >= 400 && errRes.status < 500) {
-        if (!silent) showToast("warning", message);
-      } else if (errRes.status >= 500) {
-        if (!silent) showToast("error", message);
+      if (!silent) {
+        showToast("error", error.message || "Unknown network error.");
       }
-
       return null;
     }
 

@@ -3,7 +3,11 @@ import EventService from "../../services/event.service";
 import PaginationControls from "../../components/PaginationControls";
 import EventCard from "../../components/EventCard";
 import type { EventProps } from "../../models/events/event.model";
-
+import Button from "../../components/Button";
+import { useNavigate } from "react-router-dom";
+import { FiPlus } from "react-icons/fi";
+import { showToast } from "../../utils/Toast";
+import ConfirmationModal from "../../components/ConfirmationModal";
 
 const EventPage = () => {
   const [events, setEvents] = useState<EventProps[]>([]);
@@ -12,6 +16,10 @@ const EventPage = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
   const pageSize = 10;
+  const navigate = useNavigate();
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   const fetchEvents = async (currentPage: number) => {
     setLoading(true);
@@ -33,9 +41,35 @@ const EventPage = () => {
     fetchEvents(page);
   }, [page]);
 
+  const confirmDelete = (eventId: string) => {
+    setSelectedEventId(eventId);
+    setShowDeleteModal(true);
+  };
+
+  const handleDelete = async () => {
+    if (!selectedEventId) return;
+    setDeleting(true);
+    try {
+      const response = await EventService.deleteAdminEvent(selectedEventId);
+      setEvents(events.filter((e) => e._id !== selectedEventId));
+      setShowDeleteModal(false);
+      showToast("success", response!.message);
+      setTimeout(() => {
+        fetchEvents(page); 
+      }, 1000);
+    } catch (error) {
+      console.error("Delete failed", error);
+    } finally {
+      setDeleting(false);
+      setSelectedEventId(null);
+    }
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 py-6">
-      <h1 className="text-3xl font-bold mb-6 text-gray-800">Event Management</h1>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-3xl font-bold text-gray-800">Event Management</h1>
+      </div>
 
       {/* Summary Card */}
       <div className="mb-6">
@@ -46,6 +80,19 @@ const EventPage = () => {
           </div>
           <span className="text-4xl font-bold text-indigo-600">{total}</span>
         </div>
+      </div>
+
+      {/* Create Event Button */}
+      <div className="mb-6 flex justify-end">
+        <Button
+          variant="primary"
+          onClick={() => navigate("/create")}
+          className="w-full sm:w-auto"
+          icon={<FiPlus />}
+          iconPosition="right"
+        >
+          Create New Event
+        </Button>
       </div>
 
       {loading ? (
@@ -62,6 +109,9 @@ const EventPage = () => {
               date={event.date}
               maxAttendees={event.maxAttendees}
               attendeeCount={event.attendees?.length || 0}
+              image={typeof event.image === "string" ? event.image : ""}
+              onEdit={() => navigate(`/create/${event._id}`)}
+              onDelete={() => confirmDelete(event._id)}
             />
           ))}
         </div>
@@ -74,6 +124,19 @@ const EventPage = () => {
           onPageChange={(newPage) => setPage(newPage)}
         />
       </div>
+
+      {/* modal */}
+      <ConfirmationModal
+        isOpen={showDeleteModal}
+        title="Delete Event"
+        message="Are you sure you want to delete this event? This action cannot be undone."
+        onCancel={() => {
+          setShowDeleteModal(false);
+          setSelectedEventId(null);
+        }}
+        onConfirm={handleDelete}
+        loading={deleting}
+      />
     </div>
   );
 };

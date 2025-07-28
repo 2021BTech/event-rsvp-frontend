@@ -6,4 +6,5 @@ export interface ApiCallProps<T = unknown> {
   Data?: T;
   timeoutOverride?: number;
   silent?: boolean;
+  headers?: Record<string, string>;
 }

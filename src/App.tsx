@@ -13,6 +13,7 @@ import DashboardHome from "./pages/Dashboard/DashboardHome";
 import { useAuth } from "./context/auth-context";
 import UserPage from "./pages/Users/User";
 import EventPage from "./pages/Event/Event";
+import CreateEventPage from "./pages/Event/CreateEvent";
 
 function App() {
   const { isAuthenticated } = useAuth();
@@ -57,12 +58,37 @@ function App() {
             }
           />
 
-           <Route
+          <Route
             path="/events"
             element={
               isAuthenticated ? (
                 <DashboardLayout>
                   <EventPage />
+                </DashboardLayout>
+              ) : (
+                <Navigate to="/" replace />
+              )
+            }
+          />
+
+          <Route
+            path="/create"
+            element={
+              isAuthenticated ? (
+                <DashboardLayout>
+                  <CreateEventPage />
+                </DashboardLayout>
+              ) : (
+                <Navigate to="/" replace />
+              )
+            }
+          />
+          <Route
+            path="/create/:id"
+            element={
+              isAuthenticated ? (
+                <DashboardLayout>
+                  <CreateEventPage />
                 </DashboardLayout>
               ) : (
                 <Navigate to="/" replace />
