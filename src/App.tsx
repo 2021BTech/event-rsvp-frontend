@@ -14,6 +14,7 @@ import { useAuth } from "./context/auth-context";
 import UserPage from "./pages/Users/User";
 import EventPage from "./pages/Event/Event";
 import CreateEventPage from "./pages/Event/CreateEvent";
+import LandingPage from "./pages/landing";
 
 function App() {
   const { isAuthenticated } = useAuth();
@@ -22,8 +23,21 @@ function App() {
     <>
       <Router>
         <Routes>
+          {/* Landing page at `/` */}
           <Route
             path="/"
+            element={
+              isAuthenticated ? (
+                <Navigate to="/dashboard" replace />
+              ) : (
+                <LandingPage />
+              )
+            }
+          />
+
+          {/* Login page at `/auth` */}
+          <Route
+            path="/auth"
             element={
               isAuthenticated ? (
                 <Navigate to="/dashboard" replace />
@@ -32,6 +46,8 @@ function App() {
               )
             }
           />
+
+          {/* Authenticated routes */}
           <Route
             path="/dashboard"
             element={
@@ -40,7 +56,7 @@ function App() {
                   <DashboardHome />
                 </DashboardLayout>
               ) : (
-                <Navigate to="/" replace />
+                <Navigate to="/auth" replace />
               )
             }
           />
@@ -53,7 +69,7 @@ function App() {
                   <UserPage />
                 </DashboardLayout>
               ) : (
-                <Navigate to="/" replace />
+                <Navigate to="/auth" replace />
               )
             }
           />
@@ -66,7 +82,7 @@ function App() {
                   <EventPage />
                 </DashboardLayout>
               ) : (
-                <Navigate to="/" replace />
+                <Navigate to="/auth" replace />
               )
             }
           />
@@ -79,7 +95,7 @@ function App() {
                   <CreateEventPage />
                 </DashboardLayout>
               ) : (
-                <Navigate to="/" replace />
+                <Navigate to="/auth" replace />
               )
             }
           />
@@ -91,7 +107,7 @@ function App() {
                   <CreateEventPage />
                 </DashboardLayout>
               ) : (
-                <Navigate to="/" replace />
+                <Navigate to="/auth" replace />
               )
             }
           />
