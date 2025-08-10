@@ -18,6 +18,11 @@ const CreateEventPage = () => {
     date: "",
     maxAttendees: 0,
     image: "",
+    location: {
+      address: "",
+      lat: 0,
+      lng: 0,
+    },
   });
 
   const [preview, setPreview] = useState<string | null>(null);
@@ -25,10 +30,9 @@ const CreateEventPage = () => {
   const isEdit = Boolean(id);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
- if (fileInputRef.current) {
-  fileInputRef.current.value = "";
-}
-
+  if (fileInputRef.current) {
+    fileInputRef.current.value = "";
+  }
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -42,6 +46,7 @@ const CreateEventPage = () => {
             date: event.date.slice(0, 16),
             maxAttendees: event.maxAttendees,
             image: event.image,
+           location: event.location ?? { address: "", lat: 0, lng: 0 },
           });
           if (typeof event.image === "string") {
             setPreview(event.image);
@@ -89,12 +94,14 @@ const CreateEventPage = () => {
         fd.append("date", form.date);
         fd.append("maxAttendees", String(form.maxAttendees));
         fd.append("image", form.image as File);
-        for (const [key, val] of fd.entries()) {
-          console.log(`${key}:`, val);
-        }
+        fd.append("location", JSON.stringify(form.location));
+
         payload = fd;
       } else {
-        payload = form;
+        payload = {
+          ...form,
+          location: form.location,
+        };
       }
 
       if (isEdit && id) {
@@ -170,6 +177,70 @@ const CreateEventPage = () => {
                   onChange={handleChange}
                   className="w-full px-4 py-2 mt-1 border rounded-md focus:ring-2 focus:ring-primary focus:outline-none"
                 />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Address
+                </label>
+                <input
+                  name="address"
+                  value={form.location.address}
+                  onChange={(e) =>
+                    setForm((prev) => ({
+                      ...prev,
+                      location: { ...prev.location, address: e.target.value },
+                    }))
+                  }
+                  placeholder="Enter event address"
+                  className="w-full px-4 py-2 mt-1 border rounded-md focus:ring-2 focus:ring-primary focus:outline-none"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Latitude
+                  </label>
+                  <input
+                    type="number"
+                    name="lat"
+                    value={form.location.lat}
+                    onChange={(e) =>
+                      setForm((prev) => ({
+                        ...prev,
+                        location: {
+                          ...prev.location,
+                          lat: Number(e.target.value),
+                        },
+                      }))
+                    }
+                    step="any"
+                    className="w-full px-4 py-2 mt-1 border rounded-md focus:ring-2 focus:ring-primary focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Longitude
+                  </label>
+                  <input
+                    type="number"
+                    name="lng"
+                    value={form.location.lng}
+                    onChange={(e) =>
+                      setForm((prev) => ({
+                        ...prev,
+                        location: {
+                          ...prev.location,
+                          lng: Number(e.target.value),
+                        },
+                      }))
+                    }
+                    step="any"
+                    className="w-full px-4 py-2 mt-1 border rounded-md focus:ring-2 focus:ring-primary focus:outline-none"
+                  />
+                </div>
               </div>
 
               <div>

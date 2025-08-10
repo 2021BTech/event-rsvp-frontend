@@ -109,6 +109,7 @@ const EventPage = () => {
               date={event.date}
               maxAttendees={event.maxAttendees}
               attendeeCount={event.attendees?.length || 0}
+              location={event.location}
               image={typeof event.image === "string" ? event.image : ""}
               onEdit={() => navigate(`/create/${event._id}`)}
               onDelete={() => confirmDelete(event._id)}

@@ -11,7 +11,7 @@ const Navbar = ({ onToggleSidebar }: NavbarProps) => {
 
   const handleLogout = () => {
     sessionStorage.clear();
-    window.location.href = "/";
+    window.location.href = "/auth";
   };
 
   return (

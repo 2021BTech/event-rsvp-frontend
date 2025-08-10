@@ -3,6 +3,11 @@ interface BaseModel {
   __v: number;
 }
 
+export interface Location {
+  address: string;
+  lat: number;
+  lng: number;
+}
 
 export interface Attendee extends BaseModel {
   name: string;
@@ -17,6 +22,7 @@ export interface EventProps extends BaseModel {
   maxAttendees: number;
   attendees: Attendee[];
   image: string;
+  location: Location;
 }
 
 
@@ -26,4 +32,5 @@ export interface CreateEventDTO {
   date: string;
   maxAttendees: number;
   image: File | string;
+  location: Location;
 }

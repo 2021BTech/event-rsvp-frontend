@@ -1,4 +1,4 @@
-import { FiCalendar, FiUsers, FiEdit, FiTrash } from "react-icons/fi";
+import { FiCalendar, FiUsers, FiEdit, FiTrash, FiMapPin } from "react-icons/fi";
 import type { EventCardProps } from "../models/components/eventCard.model";
 import placeholder from "../assets/image/place.jpg"
 
@@ -9,6 +9,7 @@ const EventCard = ({
   image,
   maxAttendees,
   attendeeCount,
+  location,
   onEdit,
   onDelete,
 }: EventCardProps) => {
@@ -45,6 +46,11 @@ const EventCard = ({
         <div className="flex items-center gap-2 text-sm text-gray-500 mt-4">
           <FiCalendar />
           <span>{formattedDate}</span>
+        </div>
+
+        <div className="flex items-center gap-2 text-sm text-gray-500 mt-2">
+          <FiMapPin />
+          <span>{location?.address || "No location provided"}</span>
         </div>
 
         <div className="flex items-center gap-2 text-sm text-gray-500 mt-2">

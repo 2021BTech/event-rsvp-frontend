@@ -1,3 +1,4 @@
+
 export type EventCardProps = {
   title: string;
   description: string;
@@ -5,6 +6,11 @@ export type EventCardProps = {
   image: string;
   maxAttendees: number;
   attendeeCount: number;
-   onEdit?: () => void;
-    onDelete?: () => void;
+  location?: {
+    address: string;
+    lat: number;
+    lng: number;
+  };
+  onEdit?: () => void;
+  onDelete?: () => void;
 };
