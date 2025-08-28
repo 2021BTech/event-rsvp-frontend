@@ -1,6 +1,7 @@
-import { FiCalendar, FiUsers, FiEdit, FiTrash, FiMapPin } from "react-icons/fi";
+import { FiCalendar, FiUsers, FiEdit, FiTrash, FiMapPin, FiEye, FiBarChart2 } from "react-icons/fi";
 import type { EventCardProps } from "../models/components/eventCard.model";
 import placeholder from "../assets/image/place.jpg"
+import { useNavigate } from "react-router-dom";
 
 const EventCard = ({
   title,
@@ -10,10 +11,19 @@ const EventCard = ({
   maxAttendees,
   attendeeCount,
   location,
+  eventId,
+  onView,
   onEdit,
   onDelete,
 }: EventCardProps) => {
   const formattedDate = new Date(date).toLocaleString();
+
+  const navigate = useNavigate();
+  
+
+   const handleViewSummary = () => {
+    navigate(`/events/summary/${eventId}`);
+  };
 
   return (
     <div className="bg-white shadow-md rounded-lg overflow-hidden hover:shadow-lg transition-all">
@@ -28,6 +38,18 @@ const EventCard = ({
         <div className="flex justify-between items-start">
           <h3 className="text-xl font-semibold text-indigo-700">{title}</h3>
           <div className="flex gap-2 text-gray-500">
+             <button 
+              onClick={handleViewSummary} 
+              title="View Summary"
+              className="p-1 hover:bg-gray-100 rounded"
+            >
+              <FiBarChart2 className="w-4 h-4 hover:text-purple-400 transition-colors" />
+          </button>
+              {onView && (
+              <button onClick={onView} title="View">
+                <FiEye className="hover:text-blue-400 transition-colors" />
+              </button>
+            )}
             {onEdit && (
               <button onClick={onEdit} title="Edit">
                 <FiEdit className="hover:text-indigo-600 transition-colors" />

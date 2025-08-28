@@ -1,4 +1,3 @@
-
 export type EventCardProps = {
   title: string;
   description: string;
@@ -6,6 +5,7 @@ export type EventCardProps = {
   image: string;
   maxAttendees: number;
   attendeeCount: number;
+  eventId: string;
   location?: {
     address: string;
     lat: number;
@@ -13,4 +13,12 @@ export type EventCardProps = {
   };
   onEdit?: () => void;
   onDelete?: () => void;
-};
+  onView?(): void;
+}
+export interface EventAttendee extends Record<string, unknown> {
+  _id: string;
+  name: string;
+  email: string;
+  status: "Going" | "Maybe" | "Not Going";
+  timestamp: string;
+}

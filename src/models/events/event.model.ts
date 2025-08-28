@@ -34,3 +34,10 @@ export interface CreateEventDTO {
   image: File | string;
   location: Location;
 }
+
+export interface EventAttendeesModalProps {
+  eventId: string;
+  eventTitle: string;
+  isOpen: boolean;
+  onClose: () => void;
+}

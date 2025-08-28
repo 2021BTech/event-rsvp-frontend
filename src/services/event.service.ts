@@ -1,3 +1,4 @@
+import type { EventAttendee } from "../models/components/eventCard.model";
 import type { CreateEventDTO, EventProps } from "../models/events/event.model";
 import type { User } from "../models/users/user.model";
 import ApiCall from "../utils/ApiCall";
@@ -55,6 +56,49 @@ export default class EventService {
       Method: "GET",
     });
   }
+
+  //Get attendees for a specific event (admin view)
+static async getEventAttendees(eventId: string) {
+  return await ApiCall<{
+    attendees: EventAttendee[];
+    total: number;
+    page: number;
+    totalPages: number;
+  }>({
+    Url: `/events/${eventId}/attendees`,
+    Method: "GET",
+  });
+}
+
+//Event summary
+static async getEventRsvpSummary(
+  eventId: string, 
+  status?: string, 
+  page: number = 1, 
+  limit: number = 10
+) {
+  let url = `/events/${eventId}/rsvp-summary?page=${page}&limit=${limit}`;
+  
+  if (status) {
+    url += `&status=${encodeURIComponent(status)}`;
+  }
+  
+  return await ApiCall<{
+    summary: {
+      going: number;
+      maybe: number;
+      cantGo: number;
+    };
+    attendees: EventAttendee[];
+    total: number;
+    page: number;
+    totalPages: number;
+    statusFilter: string;
+  }>({
+    Url: url,
+    Method: "GET",
+  });
+}
 
   // Delete a user by ID
   static async deleteAdminUser(

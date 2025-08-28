@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { FiPlus } from "react-icons/fi";
 import { showToast } from "../../utils/Toast";
 import ConfirmationModal from "../../components/ConfirmationModal";
+import EventAttendeesModal from "./EventAttendeesModal";
 
 const EventPage = () => {
   const [events, setEvents] = useState<EventProps[]>([]);
@@ -20,6 +21,8 @@ const EventPage = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [showAttendeesModal, setShowAttendeesModal] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState<{id: string, title: string} | null>(null);
 
   const fetchEvents = async (currentPage: number) => {
     setLoading(true);
@@ -65,6 +68,11 @@ const EventPage = () => {
     }
   };
 
+   const handleViewAttendees = (eventId: string, eventTitle: string) => {
+    setSelectedEvent({ id: eventId, title: eventTitle });
+    setShowAttendeesModal(true);
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 py-6">
       <div className="flex items-center justify-between mb-6">
@@ -104,6 +112,7 @@ const EventPage = () => {
           {events.map((event) => (
             <EventCard
               key={event._id}
+              eventId={event._id}
               title={event.title}
               description={event.description}
               date={event.date}
@@ -113,6 +122,7 @@ const EventPage = () => {
               image={typeof event.image === "string" ? event.image : ""}
               onEdit={() => navigate(`/create/${event._id}`)}
               onDelete={() => confirmDelete(event._id)}
+              onView={() => handleViewAttendees(event._id, event.title)}
             />
           ))}
         </div>
@@ -138,6 +148,16 @@ const EventPage = () => {
         onConfirm={handleDelete}
         loading={deleting}
       />
+
+      {/* Attendees Modal */}
+      {selectedEvent && (
+        <EventAttendeesModal
+          eventId={selectedEvent.id}
+          eventTitle={selectedEvent.title}
+          isOpen={showAttendeesModal}
+          onClose={() => setShowAttendeesModal(false)}
+        />
+      )}
     </div>
   );
 };
